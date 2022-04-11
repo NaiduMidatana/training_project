@@ -25,12 +25,17 @@ public class CartServiceImpl implements CartService {
 	@Autowired
 	private Constants constants;
 
+	/**
+	 * create a cart
+	 */
 	@Override
 	public Cart insertCart(Cart newCart) {
-	
 		return cartRepository.save(newCart);
 	}
 
+	/**
+	 * show cart by Id
+	 */
 	@Override
 	public Cart showCartById(Long cartId) throws ResourceNotFoundException {
 		return cartRepository.findByCartId(cartId)
@@ -43,11 +48,17 @@ public class CartServiceImpl implements CartService {
 //				.orElseThrow(() -> new UserNotFoundException("User not found with id " + userId));
 //	}
 
+	/**
+	 * show all carts in our application
+	 */
 	@Override
 	public List<Cart> showAllCarts() {
 		return cartRepository.findAll();
 	}
 
+	/**
+	 * update cart by Id
+	 */
 	@Override
 	public Cart updateCartById(Long cartId, Cart cart) throws ResourceNotFoundException{
 		Cart existingCart = cartRepository.findByCartId(cartId)
@@ -56,11 +67,15 @@ public class CartServiceImpl implements CartService {
 		return existingCart;
 	}
 
+	/**
+	 * delete cart by ID
+	 */
 	@Override
-	public void deleteCartById(Long cartId) throws ResourceNotFoundException {
+	public String deleteCartById(Long cartId) throws ResourceNotFoundException {
 		Cart existingCart = cartRepository.findByCartId(cartId)
 				.orElseThrow(() -> new ResourceNotFoundException(constants.CART + cartId));
 		cartRepository.delete(existingCart);
+		return "cart deleted";
 	}
 
 //	@Override

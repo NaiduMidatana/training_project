@@ -12,13 +12,13 @@ import com.mouritech.onlineshoppingsystem.exception.ResourceNotFoundException;
 
 public interface ProductImageService {
 
-	Optional<ProductImage> addImage(String prodId, MultipartFile file) throws ResourceNotFoundException, IOException;
+	Optional<ProductImage> addImage(String prodId, MultipartFile file) throws ResourceNotFoundException;
 
 	ProductImage getImageByProdId(String prodId);
 
 	List<ProductImage> getAllImages();
 
-	Optional<Object> updateImage(String prodId, MultipartFile file) throws IOException;
+	Optional<Object> updateImage(String prodId, MultipartFile file) throws ResourceNotFoundException;
 
 	ResponseEntity<?> deleteImage(String prodId, Long imageId) throws ResourceNotFoundException;
 

@@ -44,10 +44,19 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private Constants constants;
 
+	/**
+	 * encoding password
+	 * 
+	 * @param password
+	 * @return encoded password
+	 */
 	public String getEncodedPassword(String password) {
 		return passwordEncoder.encode(password);
 	}
 
+	/**
+	 * insert a new user
+	 */
 	@Override
 	public ResponseEntity<?> insertUser(User user) {
 		if (checkUserExistance(user.getUserName()))
@@ -60,14 +69,18 @@ public class UserServiceImpl implements UserService {
 		user.setRoles(userRoles);
 		user.setEnabled(true);
 		user.setCart(cartService.insertCart(cart));
-
 		user.setPassword(getEncodedPassword(user.getPassword()));
-
 		userRepository.save(user);
 		return ResponseEntity.ok().body(user);
 
 	}
 
+	/**
+	 * check user exists or not
+	 * 
+	 * @param username
+	 * @return true or false
+	 */
 	public boolean checkUserExistance(String username) {
 		Optional<User> user1 = userRepository.findByUserName(username);
 		if (!user1.isPresent()) {
@@ -78,6 +91,11 @@ public class UserServiceImpl implements UserService {
 
 	}
 
+	/**
+	 * generate user id by using random number method
+	 * 
+	 * @return
+	 */
 	public String generateuserId() {
 		Random rand = new Random(); // instance of random class
 		int upperbound = 255;
@@ -87,19 +105,26 @@ public class UserServiceImpl implements UserService {
 
 	}
 
+	/**
+	 * show user by id
+	 */
 	@Override
 	public User showUserById(String userId) throws ResourceNotFoundException {
-
 		return userRepository.findByUserId(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(constants.USER + userId));
 	}
 
+	/**
+	 * show all users
+	 */
 	@Override
 	public List<User> showAllUsers() {
-
 		return userRepository.findAll();
 	}
 
+	/**
+	 * update user by id
+	 */
 	@Override
 	public User updateUserById(String userId, User User) throws ResourceNotFoundException {
 		User existingUser = userRepository.findByUserId(userId)
@@ -112,61 +137,21 @@ public class UserServiceImpl implements UserService {
 		return existingUser;
 	}
 
+	/**
+	 * delete user by id
+	 */
 	@Override
-	public void deleteUserById(String userId) throws ResourceNotFoundException {
+	public String deleteUserById(String userId) throws ResourceNotFoundException {
 		User existingUser = userRepository.findByUserId(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(constants.USER + userId));
 		userRepository.delete(existingUser);
+		return "user deleted";
 	}
 
-//	@Override
-//	public ResponseEntity<User> getUserByEmailAndPassword(String email, String password)
-//			throws UserNotFoundException {
-//		 User user = UserRepository.findByUserEmailAndPassword(email, password)
-//		          .orElseThrow(() -> new UserNotFoundException(" invalid credentials "));
-//		        return ResponseEntity.ok().body(user);
-//	}
 
-//	@Override
-//	public boolean findUserByEmailAndPassword(String email, String password) {
-//        boolean flag =false;
-//		
-//     User user = userRepository.findByUserEmailAndPassword(email, password)
-//     .orElseThrow(() -> new UserNotFoundException(" invalid credentials "));
-//		if(user==null) {
-//			return flag;
-//		}
-//		else {
-//			return flag=true;
-//		}
-//	}
-
-	@Override
-	public ResponseEntity<?> checkUserEmailAndPassword(UserDto userDto) {
-		User user = userRepository.findByUserEmailAndPassword(userDto.getUsername(), userDto.getPassword())
-				.orElseThrow(() -> new ResourceNotFoundException(constants.INVALID_CRED));
-
-		return ResponseEntity.ok().body(user);
-//		
-//		User checkEmailExisting = UserRepository.findBycustEmail(userDto.getUserEmail());
-//		 User checkpasswordExisting = UserRepository.findByPassword(userDto.getPassword());
-//		 
-//		 if(checkEmailExisting==null) {
-//			 
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This email is not present in data base please check email or go to sign in");
-//			 
-//		 }
-//		 else if (checkpasswordExisting==null) {
-//			
-//			 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("password doesnt match");
-//		}
-//		
-//		 else {			 return ResponseEntity.ok().body("login successful");
-//		 }
-//	}
-
-	}
-
+	/**
+	 * login 
+	 */
 	@Override
 	public ResponseEntity<?> login(UserDto userDto) {
 		Optional<User> user = userRepository.findByUserName(userDto.getUsername());

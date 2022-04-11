@@ -25,20 +25,25 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 	@Autowired
 	private Constants constants;
 	
+	/**
+	 * get all order details 
+	 */
 	@Override
 	public List<OrderDetails> getAllOrderDetails() {
-		
 		return orderdetailsRepository.findAll();
 	}
-
+ 
+	/**
+	 * save order details
+	 */
 	@Override
 	public OrderDetails saveOrderDetails(OrderDetails OrderDetails) {
-
 		return orderdetailsRepository.save(OrderDetails);
 	}
 
-
-
+	/**
+	 * insert order details
+	 */
 	@Override
 	public OrderDetails insertOrderDetails(String orderId, @Valid OrderDetails newOrderDetails)
 			throws ResourceNotFoundException {
@@ -49,12 +54,17 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 		}).orElseThrow(() -> new ResourceNotFoundException(constants.ORDER + orderId));
 	}
 
+	/**
+	 * find order details by order id
+	 */
 	@Override
 	public List<OrderDetails> findByOrder_OrderId(String orderId) {
-
 		return orderdetailsRepository.findByOrder_OrderId(orderId);
 	}
 
+	/**
+	 * delete order details by id
+	 */
 	@Override
 	public ResponseEntity<?> deleteOrderDetails(Long orderDetailsId) throws ResourceNotFoundException {
 		return orderdetailsRepository.findByOrderDetailsId(orderDetailsId).map(orderDetails -> {
@@ -63,6 +73,9 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 		}).orElseThrow(() -> new ResourceNotFoundException(constants.ORDER_DETAILS + orderDetailsId));
 	}
 
+	/**
+	 * update order details by id
+	 */
 	@Override
 	public ResponseEntity<OrderDetails> updateOrderDetails(Long orderDetailsId, @Valid OrderDetails orderDetails)
 			throws ResourceNotFoundException {

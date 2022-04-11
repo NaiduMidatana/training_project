@@ -51,7 +51,6 @@ public class GuestController {
 	//add user
 	@PostMapping("/registerNewUser")
 	public ResponseEntity<?> insertUser(@Valid @RequestBody User newUser) throws ResourceNotFoundException {
-
 		return userService.insertUser(newUser);
 
 	}
