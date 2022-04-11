@@ -20,5 +20,5 @@ public interface CartItemService {
 
 	List<CartItem> findByCart_cartId(Long cartId);
 
-	void removeFromCart(Long id) throws ResourceNotFoundException;
+	ResponseEntity<?> removeFromCart(Long id) throws ResourceNotFoundException;
 }

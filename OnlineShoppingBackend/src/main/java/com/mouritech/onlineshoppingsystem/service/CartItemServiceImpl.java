@@ -26,26 +26,33 @@ public class CartItemServiceImpl implements CartItemService {
 		@Autowired
 		private Constants constants;
 		
+		/**
+		 * insert cart item
+		 */
 		@Override
 		public CartItem insertCartItem(CartItem newCartItem) {
-			
 			return cartItemRepository.save(newCartItem);
 		}
 
-		
-
+		/**
+		 * show all cart items
+		 */
 		@Override
 		public List<CartItem> showAllCartItems() {
-			// TODO Auto-generated method stub
 			return cartItemRepository.findAll();
 		}
-
+		
+        /**
+         * show cart item by Id
+         */
 		@Override
 		public CartItem showCartItemById(Long itemId) throws ResourceNotFoundException {
-			// TODO Auto-generated method stub
-			return null;
+			return cartItemRepository.findById(itemId).orElseThrow(()-> new ResourceNotFoundException(constants.CART_ITEM + itemId));
 		}
 
+		/**
+		 * insert cart item by cart Id
+		 */
 		@Override
 		public ResponseEntity<CartItem> insertCartItembyCartId(Long cartId, CartItem newCartItem)throws ResourceNotFoundException {
 		   CartItem cartItem = cartRepository.findByCartId(cartId).map(cart -> {
@@ -57,16 +64,22 @@ public class CartItemServiceImpl implements CartItemService {
 		return new ResponseEntity<CartItem>(newCartItem, HttpStatus.CREATED);
 			}
 
+		/**
+		 * remove cart item from cart
+		 */
 		@Override
-		public void removeFromCart(Long id) throws ResourceNotFoundException {
+		public ResponseEntity<?> removeFromCart(Long id) throws ResourceNotFoundException {
 			if (cartItemRepository.existsById(id)){
 				cartItemRepository.deleteById(id);
+				return new ResponseEntity<>("cartItem deleted", HttpStatus.OK);
 			} else {
 				throw new  ResourceNotFoundException(constants.CART_ITEM + id );
 			}
 		}
 		
-		
+		/**
+		 * find cart item by cart Id
+		 */
 		@Override
 		public List<CartItem> findByCart_cartId(Long cartId) {
 			return cartItemRepository.findByCart_CartId(cartId);

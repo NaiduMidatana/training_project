@@ -16,18 +16,12 @@ public interface UserService {
 
 	List<User> showAllUsers();
 
-
-	//boolean findUserByEmailAndPassword(String email, String password);
-
-	ResponseEntity<?> checkUserEmailAndPassword(UserDto userDto);
 	User updateUserById(String userId, User User) throws ResourceNotFoundException;
 
-	void deleteUserById(String userId) throws ResourceNotFoundException;
+	String deleteUserById(String userId) throws ResourceNotFoundException;
 
 	ResponseEntity<?> login(UserDto userDto);
 
-	//ResponseEntity<User> getUserByEmailAndPassword(String email, String password) throws UserNotFoundException;
 
-	
 
 }
