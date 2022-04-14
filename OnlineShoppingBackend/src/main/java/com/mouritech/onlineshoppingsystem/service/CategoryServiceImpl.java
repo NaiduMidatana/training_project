@@ -28,6 +28,9 @@ public class CategoryServiceImpl implements CategoryService {
 	@Autowired
 	private Constants constants;
 	
+	/**
+	 * insert category
+	 */
 	@Override
 	public ResponseEntity<CategoryDto> insertCategory(CategoryDto catDto) {
 		
@@ -38,6 +41,10 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 	
 
+	/**
+	 * Generate category id by using random number
+	 * @return category id in string format.
+	 */
 	public String generateCatId() {
 		Random rand = new Random(); // instance of random class
 		int upperbound = 255;
@@ -46,7 +53,11 @@ public class CategoryServiceImpl implements CategoryService {
 		return "C" + cId;
 
 	}
-	
+
+    /**
+     * show category by Id
+     */
+
 	@Override
 	public ResponseEntity<CategoryDto> showCatById(String catId) throws ResourceNotFoundException {
 		// TODO Auto-generated method stub
@@ -55,7 +66,12 @@ public class CategoryServiceImpl implements CategoryService {
 		CategoryDto catdto = catMapper.toCatDTO(category);
 	return new ResponseEntity<>(catdto,HttpStatus.OK);
 	}
-	
+
+
+	/**
+	 * show all categories
+	 */
+
 	@Override
 	public ResponseEntity<List<CategoryDto>> showAllCategorys() {
 		List<Category> categories = new ArrayList<Category>();
@@ -63,29 +79,36 @@ public class CategoryServiceImpl implements CategoryService {
 		if (categories.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
+
 		return new ResponseEntity<>( categories.stream().map(e->catMapper.toCatDTO(e)).collect(Collectors.toList()), HttpStatus.OK);
 
 	}
 	
+
+	/**
+	 * update category by id
+	 */
+
 	@Override
 	public ResponseEntity<CategoryDto> updateCatById(String catId, Category category) throws ResourceNotFoundException {
 		Category existingCategory = categoryRepository.findByCatId(catId)
 				.orElseThrow(() -> new ResourceNotFoundException(constants.CATEGORY + catId));
 		existingCategory.setCatName(category.getCatName());
-
 		categoryRepository.save(existingCategory);
 		CategoryDto categorydto = catMapper.toCatDTO(existingCategory);
 		return new ResponseEntity<>(categorydto ,HttpStatus.OK);
 	}
-	/*
-	 * 
+
+    
+	/**
+	 * delete category by id
+
 	 */
 	@Override
 	public ResponseEntity<?> deleteCatById(String catId) throws ResourceNotFoundException {
 		Category existingCategory = categoryRepository.findByCatId(catId)
 				.orElseThrow(() -> new ResourceNotFoundException(constants.CATEGORY + catId));
 		categoryRepository.delete(existingCategory);
-		
 		return new ResponseEntity<>("deleted",HttpStatus.OK);
 		
 	}

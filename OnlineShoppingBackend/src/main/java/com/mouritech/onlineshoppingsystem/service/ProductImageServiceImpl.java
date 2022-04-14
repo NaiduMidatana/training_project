@@ -35,9 +35,12 @@ public class ProductImageServiceImpl implements ProductImageService {
 	@Autowired
 	private Constants constants;
 	
+	/**
+	 * add image to the product
+	 */
 	@Override
-	public Optional<ProductImage> addImage(String prodId, MultipartFile file) throws IOException {
-		
+
+	public Optional<ProductImage> addImage(String prodId, MultipartFile file) throws ResourceNotFoundException {
 		ProductImage pimg = new ProductImage();
 
 		return productRepository.findByProdId(prodId).map(item -> {
@@ -54,6 +57,11 @@ public class ProductImageServiceImpl implements ProductImageService {
 		});
 	}
 
+	/**
+	 * decompress the image into bytes
+	 * @param compressed image data 
+	 * @return decompressed image data
+	 */
 	private byte[] decompressByte(byte[] data) {
 
 
@@ -74,9 +82,12 @@ public class ProductImageServiceImpl implements ProductImageService {
 
 	}
 
+	/** 
+	 * compress the  image data in byte
+	 * @param original image data in byte
+	 * @return compressed image data in byte
+	 */
 	private byte[] compressBytes(byte[] data) {
-	
-
 		Deflater deflater = new Deflater();
 		deflater.setInput(data);
 		deflater.finish();
@@ -93,7 +104,10 @@ public class ProductImageServiceImpl implements ProductImageService {
 		System.out.println("Compressed Image Byte Size - " + outputStream.toByteArray().length);
 		return outputStream.toByteArray();
 	}
-
+  
+	/**
+	 * Get image by product id
+	 */
 	@Override
 	public ProductImage getImageByProdId(String prodId) {
 		final Optional<ProductImage> retrievedImage = productimageRepository.findByProduct_ProdId(prodId);
@@ -104,6 +118,9 @@ public class ProductImageServiceImpl implements ProductImageService {
 		return img;
 	}
 
+	/**
+	 * Get all images
+	 */
 	@Override
 	public List<ProductImage> getAllImages() {
 		List<ProductImage> images = productimageRepository.findAll();
@@ -117,11 +134,16 @@ public class ProductImageServiceImpl implements ProductImageService {
 	}
 
 	@Override
-	public Optional<Object> updateImage(String prodId, MultipartFile file) throws IOException {
+	public Optional<Object> updateImage(String prodId, MultipartFile file) throws ResourceNotFoundException {
 		ProductImage img = productimageRepository.findByProduct_ProdId(prodId).get();
 //		img.setImageName(file.getOriginalFilename());
 //		img.setImageType(file.getContentType());
-		img.setPicByte(compressBytes(file.getBytes()));
+		try {
+			img.setPicByte(compressBytes(file.getBytes()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		return productRepository.findByProdId(prodId).map(item -> {
 			img.setProduct(item);
@@ -129,9 +151,11 @@ public class ProductImageServiceImpl implements ProductImageService {
 		});
 	}
 
+	/**
+	 * Delete image by id
+	 */
 	@Override
 	public ResponseEntity<?> deleteImage(String prodId, Long imageId) throws ResourceNotFoundException {
-
 		return productimageRepository.findByImageIdAndProduct_ProdId(imageId, prodId).map(image -> {
 			productimageRepository.delete(image);
 			return ResponseEntity.ok().build();
@@ -139,6 +163,9 @@ public class ProductImageServiceImpl implements ProductImageService {
 
 	}
 
+	/**
+	 * Get image by id
+	 */
 	@Override
 	public ProductImage getImageById(Long imageId) throws ResourceNotFoundException {
 		return productimageRepository.findById(imageId)

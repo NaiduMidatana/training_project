@@ -22,7 +22,6 @@ import com.mouritech.onlineshoppingsystem.repository.OrderRepository;
 import com.mouritech.onlineshoppingsystem.repository.UserRepository;
 import com.mouritech.onlineshoppingsystem.util.Constants;
 
-
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -30,11 +29,16 @@ public class OrderServiceImpl implements OrderService {
 	private OrderRepository orderRepository;
 	@Autowired
 	private UserRepository userRepository;
+
 	@Autowired
 	OrderMapper orderMapper;
+
 	@Autowired
 	private Constants constants;
-	
+
+	/**
+	 * save order
+	 */
 	@Override
 	public OrderDto saveOrder(OrderDto orderdto) {
 		Order order = orderMapper.toOrderEntity(orderdto);
@@ -45,24 +49,34 @@ public class OrderServiceImpl implements OrderService {
 		
 	}
 
-
+	/**
+	 * generate random order id
+	 * 
+	 * @return order id in string format
+	 */
 	public String generateOrderId() {
-		Random rand = new Random(); //instance of random class
-	      int upperbound = 255;
-	        //generate random values from 0-254
-	      Long cId = (long) rand.nextInt(upperbound);
-		return "O" + cId; 
-	
+		Random rand = new Random(); // instance of random class
+		int upperbound = 255;
+		// generate random values from 0-254
+		Long cId = (long) rand.nextInt(upperbound);
+		return "O" + cId;
+
 	}
-	
+
+	/**
+	 * Get all order details
+	 */
 	@Override
 	public List<OrderDto> getAllOrders() {
 		List<Order> list = (List<Order>) orderRepository.findAll();
 		
 		return  list.stream().map(e->orderMapper.toOrderDTO(e)).collect(Collectors.toList());
+
 	}
-
-
+    
+	/**
+	 * Update order details
+	 */
 	@Override
 	public  ResponseEntity<OrderDto> updateOrders(String orderId, @Valid OrderDto orderDto) throws ResourceNotFoundException {
 		  Order order = orderRepository.findByOrderId(orderId)
@@ -75,27 +89,36 @@ public class OrderServiceImpl implements OrderService {
 			        OrderDto postResponse = orderMapper.toOrderDTO(updatedOrder);
 			        return ResponseEntity.ok(postResponse);
 
+
 	}
-
-
+    
+	/**
+	 * Delete order
+	 */
 	@Override
 	public ResponseEntity<?> deleteOrder(String orderId) throws ResourceNotFoundException {
-		
+
 		return orderRepository.findByOrderId(orderId).map(order -> {
 			orderRepository.delete(order);
-		return ResponseEntity.ok().build();
-		}).orElseThrow(()->new ResourceNotFoundException(constants.ORDER + orderId));
+			return ResponseEntity.ok().build();
+		}).orElseThrow(() -> new ResourceNotFoundException(constants.ORDER + orderId));
 	}
-
-
+ 
+	/**
+	 * Get order by id
+	 */
 	@Override
 	public ResponseEntity<OrderDto> getOrderById(String orderId) throws ResourceNotFoundException {
 		 Order order = orderRepository.findByOrderId(orderId)
 		        .orElseThrow(() -> new ResourceNotFoundException(constants.ORDER + orderId));
 		 OrderDto postResponse = orderMapper.toOrderDTO(order);
 		      return ResponseEntity.ok().body(postResponse);
+
 	}
-	
+    
+	/**
+	 * Create order
+	 */
 	@Override
 	public ResponseEntity<OrderDto> createOrder(String userId,OrderDto newOrder) throws ResourceNotFoundException {
 		Order ordercreated = orderMapper.toOrderEntity(newOrder);
@@ -107,9 +130,13 @@ public class OrderServiceImpl implements OrderService {
 				}).orElseThrow(()-> new ResourceNotFoundException(constants.USER  + userId));
 		OrderDto resp=orderMapper.toOrderDTO(order);
 		return new ResponseEntity<OrderDto>(resp,HttpStatus.CREATED);
-	}
-	@Override
 
+	}
+
+	/**
+	 *Get all orders by user id
+	 */
+	@Override
 	public ResponseEntity<List<OrderDto>> getAllOrdersByUserId(String userId) throws ResourceNotFoundException{
 		if(!userRepository.existsUserByUserId(userId)) {
 			throw new ResourceNotFoundException(constants.USER + userId);
@@ -117,9 +144,7 @@ public class OrderServiceImpl implements OrderService {
 		List<Order> orders = orderRepository.findByUser_UserId(userId);
 		
 		return new ResponseEntity<List<OrderDto>>(orders.stream().map(e->orderMapper.toOrderDTO(e)).collect(Collectors.toList()), HttpStatus.OK);
+
 	}
 	
 }
-
-
-	

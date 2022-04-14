@@ -78,19 +78,7 @@ public class UserController {
 		return userService.updateUserById(userId, user);
 
 	}
-	@PostMapping("getemailandpasswordcheck")
-	public ResponseEntity<?>checkUserEmailAndPassword(@RequestBody UserDto userDto){
-		if(userDto==null) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("please Enter Email and password");
-		}
-		else {
-			
-			ResponseEntity<?> ckeckLogin = userService.checkUserEmailAndPassword(userDto);
-			return ckeckLogin;
-			
-		}
-		
-	}
+	
 	/////////////////////////////////////////////////Category////////////////////////////
 	
 	//get all category
@@ -113,24 +101,7 @@ public class UserController {
 			throws ResourceNotFoundException {
 		return productService.getCategory_CatIdByProdName(catId, prodName);
 	}
-////////Cart///////
-	
-	
-	//get cart data by useromer id 
-//	@GetMapping("/cart/{userId}/user")
-//	public Cart getCartByUserId(@PathVariable("userId") String userId) throws UserNotFoundException {
-//		return cartService.getCartByUserId(userId);
-//	}
-	//////////////////////////ProductImage///////////////////
-	
-	
-	// get all images
-//	@GetMapping("get-allproducts-details")
-//	public List<ProductImage> getAllImages() {
-//
-//		return productimageService.getAllImages();
-//
-//	}
+
 
 //////////////CartItem/////////
 	
@@ -161,13 +132,9 @@ public class UserController {
 		return cartitemService.findByCart_cartId(cartId);
 	}
 	@DeleteMapping("remove-from-cart")
-	public ResponseEntity<String> removeFromCart(@RequestParam Long id) {
-		try {
-			cartitemService.removeFromCart(id);
-			return ResponseEntity.ok("Removed from cart successfully");
-		} catch (ResourceNotFoundException e) {
-			return ResponseEntity.unprocessableEntity().body(e.getMessage());
-		}
+	public ResponseEntity<?> removeFromCart(@RequestParam Long id) {
+			return cartitemService.removeFromCart(id);
+			
 	}
 	
 	

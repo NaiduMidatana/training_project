@@ -57,12 +57,13 @@ public class AdminController {
 	@Autowired
 	UserService userService;
 
+
+
 	@PostMapping("add-category")
 		public ResponseEntity<CategoryDto> insertCategory(@RequestBody CategoryDto newCategory) {
 		return categoryService.insertCategory(newCategory);
 	}
-	
-	
+
 	@PutMapping("update-category/{cid}")
 	public ResponseEntity<CategoryDto> updateCatById(@PathVariable("cid") String catId, @RequestBody Category category)
 			throws ResourceNotFoundException {
@@ -70,7 +71,6 @@ public class AdminController {
 
 	}
 
-	
 	@DeleteMapping("delete-category/{cid}")
 	public ResponseEntity<?> deleteCatById(@PathVariable("cid") String catId) throws ResourceNotFoundException {
 		return categoryService.deleteCatById(catId);
@@ -87,13 +87,13 @@ public class AdminController {
 	}
 
 	
+
 	@GetMapping("get-product/{pid}")
 	public Product showProductById(@PathVariable("pid") String prodId) throws ResourceNotFoundException {
 		return productService.showProductById(prodId);
 
 	}
 
-	
 	@PutMapping("update-product/{pid}")
 	public ProductResponseDto updateProductById(@PathVariable("pid") String prodId, @RequestBody ProductDto product)
 			throws ResourceNotFoundException {
@@ -101,104 +101,85 @@ public class AdminController {
 
 	}
 
-
 	@DeleteMapping("delete-product/{pid}")
 	public String deleteProductById(@PathVariable("pid") String prodId) throws ResourceNotFoundException {
 		return productService.deleteProductById(prodId);
 	}
 
 	
+
 	@PostMapping("add-product/{catid}/category")
 	public ResponseEntity<ProductResponseDto> createProduct(@PathVariable("catid") String catid, @RequestBody ProductDto newProduct)
 			throws ResourceNotFoundException {
 		return productService.createProduct(catid, newProduct);
 
 	}
-	
 
-
-	
 	@PostMapping("add-image/{prodId}/prodImage")
 	public Optional<ProductImage> addImage(@PathVariable(value = "prodId") String prodId,
-			@RequestParam("prodImage") MultipartFile file) throws IOException {
-
+			@RequestParam("prodImage") MultipartFile file) throws ResourceNotFoundException {
 		return productimageService.addImage(prodId, file);
-
 	}
 
 
 	
+
 	@PutMapping("update-image/{prodId}/prodImages")
 	public Optional<Object> updateImage(@PathVariable(value = "prodId") String prodId,
-			@RequestParam("prodImage") MultipartFile file) throws IOException {
+			@RequestParam("prodImage") MultipartFile file) throws ResourceNotFoundException {
 		return productimageService.updateImage(prodId, file);
 
 	}
 
-	
 	@DeleteMapping("delete-image/{prodId}/prodImages/{imageId}")
 	public ResponseEntity<?> deleteImage(@PathVariable(value = "prodId") String prodId,
 			@PathVariable(value = "imageId") Long imageId) throws ResourceNotFoundException {
-
 		return productimageService.deleteImage(prodId, imageId);
 
 	}
 
 	
-	
 
-	
 	@DeleteMapping("delete-user/{uid}")
 	public String deleteUserById(@PathVariable("uid") String userId) throws ResourceNotFoundException {
-		userService.deleteUserById(userId);
-		return "deleted the user";
-
+		return userService.deleteUserById(userId);
 	}
-
-
-
+	
 	@GetMapping("/get-user")
 	public List<User> showAllUsers() {
 		return userService.showAllUsers();
 
 	}
 
-	
-	
-	//add cart
 	@PostMapping("cart")
 	public Cart insertCart(@RequestBody Cart newCart) {
 		return cartService.insertCart(newCart);
 
 	}
-	
-	
+
 	@GetMapping("carts")
 	public List<Cart> showAllCarts() {
 		return cartService.showAllCarts();
 	}
 
 	
+
 	@GetMapping("cart/{cid}")
 	public Cart showCartById(@PathVariable("cid") Long CartId) throws ResourceNotFoundException {
 		return cartService.showCartById(CartId);
 	}
+
 
 	@PutMapping("cart/{cid}")
 	public Cart updateCartById(@PathVariable("cid") Long CartId, @RequestBody Cart Cart)
 			throws ResourceNotFoundException {
 		return cartService.updateCartById(CartId, Cart);
 	}
-	
 
 	@DeleteMapping("cart/{cid}")
 	public String deleteCartById(@PathVariable("cid") Long CartId) throws ResourceNotFoundException {
-		cartService.deleteCartById(CartId);
-		return "deleted the Cart";
-
+		return cartService.deleteCartById(CartId);
 	}
-
-	
 
 	@GetMapping("/orders")
 	public List<OrderDto> getAllOrders() {
@@ -206,7 +187,7 @@ public class AdminController {
 	}
 	
 
-	
+
 	@PutMapping("/orders/{id}")
 	public ResponseEntity<OrderDto> updateOrder(@PathVariable(value = "id") String orderId,
 			@Valid @RequestBody OrderDto orderDetails) throws ResourceNotFoundException {
@@ -215,16 +196,14 @@ public class AdminController {
 
 	}
 
-	
+
 	@DeleteMapping("/orders/{orderId}")
 	public ResponseEntity<?> deleteOrder(@PathVariable(value = "orderId") String orderId)
 			throws ResourceNotFoundException {
 		return orderService.deleteOrder(orderId);
 
 	}
-	
-	
-	
+
 	@DeleteMapping("/orders/{orderId}/orderdetails")
 	public ResponseEntity<?> deleteOrderDetails(@PathVariable(value = "orderId") Long orderId)
 			throws ResourceNotFoundException {
@@ -232,12 +211,11 @@ public class AdminController {
 		return orderdetailsService.deleteOrderDetails(orderId);
 
 	}
-	
+
 	@PutMapping("/orders/orderdetails/{orderDetailsId}")
 	public ResponseEntity<OrderDetailsDto> updateOrderDetails(
 			@PathVariable(value = "orderDetailsId") Long orderDetailsId,
-			@Valid @RequestBody OrderDetailsDto orderDetails) throws ResourceNotFoundException {
-
+			@Valid @RequestBody OrderDetailsDto orderDetails) throws ResourceNotFoundException{
 		return orderdetailsService.updateOrderDetails(orderDetailsId, orderDetails);
 	}
 }

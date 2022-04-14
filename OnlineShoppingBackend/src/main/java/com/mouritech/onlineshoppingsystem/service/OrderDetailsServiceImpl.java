@@ -34,7 +34,11 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 	@Autowired
 	private Constants constants;
 	
+	/**
+	 * get all order details 
+	 */
 	@Override
+
 	public List<OrderDetailsDto> getAllOrderDetails() {
 	List<OrderDetails> list = (List<OrderDetails>) orderdetailsRepository.findAll();
 		
@@ -42,6 +46,9 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 		
 	}
 
+	/**
+	 * save order details
+	 */
 	@Override
 	public OrderDetailsDto saveOrderDetails(OrderDetailsDto OrderDetails) {
 		OrderDetails orderdetails = orderMapper.toOrderDetailsEntity(OrderDetails);
@@ -69,6 +76,9 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 		return resp;
 	}
 
+	/**
+	 * find order details by order id
+	 */
 	@Override
 	public List<OrderDetailsDto> findByOrder_OrderId(String orderId) {
 		List<OrderDetails> list = (List<OrderDetails>) orderdetailsRepository.findByOrder_OrderId(orderId);
@@ -78,8 +88,11 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 				 
 	}
 
-	
-	
+
+	/**
+	 * delete order details by id
+	 */
+
 	@Override
 	public ResponseEntity<?> deleteOrderDetails(Long orderDetailsId) throws ResourceNotFoundException {
 		return orderdetailsRepository.findByOrderDetailsId(orderDetailsId).map(orderDetails -> {
@@ -88,6 +101,9 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 		}).orElseThrow(() -> new ResourceNotFoundException(constants.ORDER_DETAILS + orderDetailsId));
 	}
 
+	/**
+	 * update order details by id
+	 */
 	@Override
 	public ResponseEntity<OrderDetailsDto> updateOrderDetails(Long orderDetailsId, @Valid OrderDetailsDto orderDetails)
 			throws ResourceNotFoundException {

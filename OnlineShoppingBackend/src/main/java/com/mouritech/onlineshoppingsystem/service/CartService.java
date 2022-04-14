@@ -19,7 +19,7 @@ public interface CartService {
 
 	//Cart getCartByUserId(Long userId) throws UserNotFoundException;
 
-	void deleteCartById(Long cartId);
+	String deleteCartById(Long cartId);
 
 	
 

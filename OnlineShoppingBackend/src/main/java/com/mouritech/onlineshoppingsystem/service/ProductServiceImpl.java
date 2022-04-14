@@ -30,15 +30,24 @@ public class ProductServiceImpl implements ProductService {
 	ProductMapper productMapper;
 	@Autowired
 	private Constants constants;
-	
+
+	/**
+	 * Insert product
+	 */
 	@Override
 	public ProductResponseDto insertProduct(ProductDto productDto) {
 		Product product = productMapper.toProductEntity(productDto);
 		product.setProdId(generateProductId());
 		Product newProduct=productRepository.save(product);
 		 return productMapper.toProductDTO(newProduct);
+
 	}
 
+	/**
+	 * Generate product id by using random number
+	 * 
+	 * @return product id in string format.
+	 */
 	public String generateProductId() {
 		Random rand = new Random(); // instance of random class
 		int upperbound = 255;
@@ -48,20 +57,29 @@ public class ProductServiceImpl implements ProductService {
 
 	}
 
+	/**
+	 * Show product by id
+	 */
 	@Override
 	public Product showProductById(String prodId) throws ResourceNotFoundException {
-	
 		return productRepository.findByProdId(prodId)
 				.orElseThrow(() -> new ResourceNotFoundException(constants.PRODUCT + prodId));
 	}
 
+	/**
+	 * Show all products
+	 */
 	@Override
 	public List<ProductResponseDto> showAllProducts() {
 		List<Product> list = (List<Product>) productRepository.findAll();
 		return list.stream().map(e->productMapper.toProductDTO(e)).collect(Collectors.toList());
 
+
 	}
 
+	/**
+	 * Update product by id
+	 */
 	@Override
 	public ProductResponseDto updateProductById(String prodId, ProductDto productDto) throws ResourceNotFoundException {
 		  Product existingProduct = productMapper. toProductEntity(productDto);
@@ -85,15 +103,21 @@ existingProduct = productRepository.findByProdId(prodId)
 			        
 	}
 
+	/**
+	 * Delete product by id
+	 */
 	@Override
 	public String deleteProductById(String prodId) throws ResourceNotFoundException {
 		Product existingProduct = productRepository.findByProdId(prodId)
 				.orElseThrow(() -> new ResourceNotFoundException(constants.PRODUCT + prodId));
 		productRepository.delete(existingProduct);
 		return "product deleted";
-	
+
 	}
 
+	/**
+	 * Get all products by category
+	 */
 	@Override
 	public ResponseEntity<List<ProductResponseDto>> getAllProductsByCategoryId(String catid) {
 		if (!categoryRepository.existsCategoryByCatId(catid)) {
@@ -104,6 +128,9 @@ existingProduct = productRepository.findByProdId(prodId)
 	}
 
 
+	/**
+	 * Create product with category
+	 */
 	@Override
 	public ResponseEntity<ProductResponseDto> createProduct(String catid, ProductDto productDto) throws ResourceNotFoundException {
 		Product product = productMapper. toProductEntity(productDto);
@@ -117,6 +144,9 @@ existingProduct = productRepository.findByProdId(prodId)
 		return new ResponseEntity<ProductResponseDto>(productMapper.toProductDTO(product), HttpStatus.CREATED);
 	}
 
+	/**
+	 * Get product by category id and product name
+	 */
 	@Override
 	public ProductResponseDto getCategory_CatIdByProdName(String catid, String productname)
 			throws ResourceNotFoundException {
@@ -124,6 +154,7 @@ existingProduct = productRepository.findByProdId(prodId)
 				() -> new ResourceNotFoundException(constants.PRODUCT + productname));
 		
 		return productMapper.toProductDTO(product);
+
 	}
 
 }
