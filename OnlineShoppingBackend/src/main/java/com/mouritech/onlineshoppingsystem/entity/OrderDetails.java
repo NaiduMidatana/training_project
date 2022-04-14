@@ -30,6 +30,8 @@ import lombok.Setter;
 @Table(name = "order_details")
 public class OrderDetails {
 
+	
+
 	@Id
 	@Column(name = "order_id", length = 64)
 	private Long orderDetailsId;
@@ -63,6 +65,8 @@ public class OrderDetails {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "orderId")
 	private Order order;
+
+	
 
 
 
