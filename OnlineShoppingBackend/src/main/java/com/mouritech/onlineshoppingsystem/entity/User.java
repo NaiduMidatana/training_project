@@ -18,13 +18,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import com.mouritech.onlineshoppingsystem.customanotation.UniqueUsername;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,7 +34,7 @@ public class User {
     @Column(name = "USER_ID",length = 64)
     private String userId;
 
-    @Column(name = "USER_NAME",unique = true)
+    @Column(name = "USER_NAME")//,unique = true)
     //@UniqueUsername(message="UserName  is already registered")
     @NotEmpty
 	@Size(min=2, message="User name should have at least 2 characters")

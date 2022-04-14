@@ -2,14 +2,11 @@ package com.mouritech.onlineshoppingsystem.controller;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,14 +16,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.mouritech.onlineshoppingsystem.dto.CartItemDto;
+import com.mouritech.onlineshoppingsystem.dto.CategoryDto;
+import com.mouritech.onlineshoppingsystem.dto.OrderDetailsDto;
+import com.mouritech.onlineshoppingsystem.dto.OrderDto;
+import com.mouritech.onlineshoppingsystem.dto.ProductDto;
+import com.mouritech.onlineshoppingsystem.dto.ProductResponseDto;
 import com.mouritech.onlineshoppingsystem.dto.UserDto;
-import com.mouritech.onlineshoppingsystem.entity.Cart;
 import com.mouritech.onlineshoppingsystem.entity.CartItem;
-import com.mouritech.onlineshoppingsystem.entity.Category;
 import com.mouritech.onlineshoppingsystem.entity.Order;
 import com.mouritech.onlineshoppingsystem.entity.OrderDetails;
 import com.mouritech.onlineshoppingsystem.entity.Product;
-import com.mouritech.onlineshoppingsystem.entity.ProductImage;
 import com.mouritech.onlineshoppingsystem.entity.User;
 import com.mouritech.onlineshoppingsystem.exception.ResourceNotFoundException;
 import com.mouritech.onlineshoppingsystem.service.CartItemService;
@@ -82,12 +83,12 @@ public class UserController {
 	
 	//get all category
 	@GetMapping("get-all-Categorys")
-	 	public ResponseEntity<List<Category>> getCategorys() {
+	 	public ResponseEntity<List<CategoryDto>> getCategorys() {
 		return categoryService.showAllCategorys();
 	}
 	//get category by category id
 	@GetMapping("get-category/{cid}")
-	public ResponseEntity<Category> showCatById(@PathVariable("cid") String catId) throws ResourceNotFoundException {
+	public ResponseEntity<CategoryDto> showCatById(@PathVariable("cid") String catId) throws ResourceNotFoundException {
 		return categoryService.showCatById(catId);
 
 	}
@@ -95,7 +96,7 @@ public class UserController {
 	
 	// get product by cat- id and product name
 	@GetMapping("get-products/{catid}/{productname}")
-	public Product getCategory_CatIdByProdName(@PathVariable("catid") String catId,
+	public ProductResponseDto getCategory_CatIdByProdName(@PathVariable("catid") String catId,
 			@PathVariable("productname") String prodName)
 			throws ResourceNotFoundException {
 		return productService.getCategory_CatIdByProdName(catId, prodName);
@@ -108,26 +109,26 @@ public class UserController {
 	
 	//add cart items 
 	@PostMapping("add-to-CartItem")
-	public CartItem insertCartItem(@RequestBody CartItem newCartItem) {
+	public CartItemDto insertCartItem(@RequestBody CartItemDto newCartItem) {
 		return cartitemService.insertCartItem(newCartItem);
 	}
 	
 	// get Cart Item 
 	@GetMapping("get-CartItems")
-	public List<CartItem> showAllCarts() {
+	public List<CartItemDto> showAllCarts() {
 		return cartitemService.showAllCartItems();
 	}
 	
 	//add cart item data by cart id 
 	@PostMapping("add-CartItem/{cartId}/items")
-	public ResponseEntity<CartItem> insertCartItembyCartId(@PathVariable(value = "cartId")Long cartId,
-			@RequestBody CartItem newCartItem) throws ResourceNotFoundException {
+	public ResponseEntity<CartItemDto> insertCartItembyCartId(@PathVariable(value = "cartId")Long cartId,
+			@RequestBody CartItemDto newCartItem) throws ResourceNotFoundException {
 		return cartitemService.insertCartItembyCartId(cartId, newCartItem);
 
 	}
 	//get cart items by cart id  
 	@GetMapping("get-CartItem/{cartId}/items")
-	public List<CartItem> getAllCartItemByOrderId(@PathVariable(value = "cartId") Long cartId) {
+	public List<CartItemDto> getAllCartItemByOrderId(@PathVariable(value = "cartId") Long cartId) {
 		return cartitemService.findByCart_cartId(cartId);
 	}
 	@DeleteMapping("remove-from-cart")
@@ -142,18 +143,18 @@ public class UserController {
 
 	// save an order
 	@PostMapping("save-order")
-	public Order saveOrder(@Valid @RequestBody Order order) {
-		return orderService.saveOrder(order);
+	public OrderDto saveOrder(@Valid @RequestBody OrderDto orderdto) {
+		return orderService.saveOrder(orderdto);
 	}
 	//get order by customer id
 	@GetMapping("get-orders/{customerid}")
-	public ResponseEntity<List<Order>> getAllOrdersByUserId(@PathVariable("customerid") String userId)
+	public ResponseEntity<List<OrderDto>> getAllOrdersByUserId(@PathVariable("customerid") String userId)
 			throws ResourceNotFoundException {
 		return orderService.getAllOrdersByUserId(userId);
 	}
 	//add order by customer id
 	@PostMapping("save-orders/{customerid}/customer")
-	public ResponseEntity<Order> createOrder(@PathVariable("customerid") String userId, @RequestBody Order newOrder)
+	public ResponseEntity<OrderDto> createOrder(@PathVariable("customerid") String userId, @RequestBody OrderDto newOrder)
 			throws ResourceNotFoundException {
 		return orderService.createOrder(userId, newOrder);
 
@@ -164,26 +165,26 @@ public class UserController {
 
 	// get all orders details
 	@GetMapping("get-orderdetails")
-	public List<OrderDetails> getAllOrders() {
+	public List<OrderDetailsDto> getAllOrders() {
 		return orderdetailsService.getAllOrderDetails();
 	}
 	// Post all orders details
 		@PostMapping("save-orderdetails")
-		public OrderDetails saveOrderDetails(@Valid @RequestBody OrderDetails orderdetails) {
+		public OrderDetailsDto saveOrderDetails( @RequestBody  @Valid OrderDetailsDto orderdetails) {
 			return orderdetailsService.saveOrderDetails(orderdetails);
 		}
 
 		// save order details with corresponded orderId
 		@PostMapping("save-orderDetails/{orderId}/orderdetails")
-		public OrderDetails insertOrderDetails(@PathVariable(value = "orderId") String orderId,
-				@Valid @RequestBody OrderDetails newOrderDetails) throws ResourceNotFoundException {
+		public OrderDetailsDto insertOrderDetails(@PathVariable(value = "orderId") String orderId,
+				@Valid @RequestBody OrderDetailsDto newOrderDetails) throws ResourceNotFoundException {
 
 			return orderdetailsService.insertOrderDetails(orderId, newOrderDetails);
 
 		}
 		// get all the order details by corresponding orderId
 		@GetMapping("get-orders/{orderId}/orderdetails")
-		public List<OrderDetails> getAllOrderDetailsByOrderId(@PathVariable(value = "orderId") String orderId) {
+		public List<OrderDetailsDto> getAllOrderDetailsByOrderId(@PathVariable(value = "orderId") String orderId) {
 			return orderdetailsService.findByOrder_OrderId(orderId);
 		}
 

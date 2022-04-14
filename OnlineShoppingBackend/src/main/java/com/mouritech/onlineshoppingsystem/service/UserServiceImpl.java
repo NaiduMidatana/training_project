@@ -7,18 +7,20 @@ import java.util.Random;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.mouritech.onlineshoppingsystem.dto.UserDetailsDto;
 import com.mouritech.onlineshoppingsystem.dto.UserDto;
+import com.mouritech.onlineshoppingsystem.dto.UserResponseDto;
 import com.mouritech.onlineshoppingsystem.entity.Cart;
 import com.mouritech.onlineshoppingsystem.entity.Role;
 import com.mouritech.onlineshoppingsystem.entity.User;
 import com.mouritech.onlineshoppingsystem.exception.ResourceNotFoundException;
-import com.mouritech.onlineshoppingsystem.mapper.Usermapper;
+
+import com.mouritech.onlineshoppingsystem.mapper.UserMapper;
 import com.mouritech.onlineshoppingsystem.repository.CartRepository;
 import com.mouritech.onlineshoppingsystem.repository.RoleRepo;
 //import com.mouritech.onlineshoppingsystem.repository.RoleRepo;
@@ -30,7 +32,11 @@ import com.mouritech.onlineshoppingsystem.util.Constants;
 public class UserServiceImpl implements UserService {
 
 	@Autowired
+	private UserMapper userMapper;
+
+	@Autowired
 	private UserRepository userRepository;
+	
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -43,6 +49,8 @@ public class UserServiceImpl implements UserService {
 	CartServiceImpl cartService;
 	@Autowired
 	private Constants constants;
+	
+	
 
 	/**
 	 * encoding password
@@ -53,25 +61,30 @@ public class UserServiceImpl implements UserService {
 	public String getEncodedPassword(String password) {
 		return passwordEncoder.encode(password);
 	}
-
 	/**
 	 * insert a new user
 	 */
 	@Override
-	public ResponseEntity<?> insertUser(User user) {
-		if (checkUserExistance(user.getUserName()))
-			return ResponseEntity.ok().body("user already exists");
-		user.setUserId(generateuserId());
+	public ResponseEntity<?> insertUser(UserDetailsDto userDto) {
+		if (checkUserExistance(userDto.getUserName()))
+
+			return new ResponseEntity<>("user already exists",HttpStatus.NO_CONTENT);
+		
+		User user = userMapper.toUserDetailsEntity(userDto);
+		Cart cart=new Cart();
 		Role role = roleRepository.findById(2).get();
 		Set<Role> userRoles = new HashSet<>();
-		Cart cart = new Cart();
 		userRoles.add(role);
 		user.setRoles(userRoles);
 		user.setEnabled(true);
+	
 		user.setCart(cartService.insertCart(cart));
 		user.setPassword(getEncodedPassword(user.getPassword()));
+		user.setUserId(generateuserId());
 		userRepository.save(user);
-		return ResponseEntity.ok().body(user);
+		 UserResponseDto userRespDto  =userMapper.convertEntityToDto(user);
+		//System.out.println(userDto);
+		return ResponseEntity.ok().body(userRespDto);
 
 	}
 
@@ -83,6 +96,15 @@ public class UserServiceImpl implements UserService {
 	 */
 	public boolean checkUserExistance(String username) {
 		Optional<User> user1 = userRepository.findByUserName(username);
+		if (!user1.isPresent()) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+	public boolean checkEmailExistance(String email) {
+		Optional<User> user1 = userRepository.findByUserEmail(email);
 		if (!user1.isPresent()) {
 			return false;
 		} else {
@@ -156,12 +178,13 @@ public class UserServiceImpl implements UserService {
 	public ResponseEntity<?> login(UserDto userDto) {
 		Optional<User> user = userRepository.findByUserName(userDto.getUsername());
 		if (!user.isPresent())
-			return ResponseEntity.ok().body("username is invalid");
+			return new ResponseEntity<>("invalid username",HttpStatus.BAD_REQUEST);
 		String encryptPwd = user.get().getPassword();
 		if (passwordEncoder.matches(userDto.getPassword(), encryptPwd)) {
-			return ResponseEntity.ok().body(user);
+			UserResponseDto userRespDto  =userMapper.convertEntityToDto(user.get());
+			return ResponseEntity.ok().body(userRespDto);
 		} else {
-			return ResponseEntity.ok().body(constants.INVALID_CRED);
+			return new ResponseEntity<>(constants.INVALID_CRED, HttpStatus.UNAUTHORIZED);
 		}
 	}
 
