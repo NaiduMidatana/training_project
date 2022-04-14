@@ -2,25 +2,28 @@ package com.mouritech.onlineshoppingsystem.service;
 
 import java.util.List;
 import org.springframework.http.ResponseEntity;
+
+import com.mouritech.onlineshoppingsystem.dto.ProductDto;
+import com.mouritech.onlineshoppingsystem.dto.ProductResponseDto;
 import com.mouritech.onlineshoppingsystem.entity.Product;
 import com.mouritech.onlineshoppingsystem.exception.ResourceNotFoundException;
 
 public interface ProductService {
 
-	Product insertProduct(Product newProduct);
+	ProductResponseDto insertProduct(ProductDto newProduct);
 
 	Product showProductById(String prodId) throws ResourceNotFoundException;
 
-	List<Product> showAllProducts();
+	List<ProductResponseDto> showAllProducts();
 
-	Product updateProductById(String prodId, Product product) throws ResourceNotFoundException;
+	ProductResponseDto updateProductById(String prodId, ProductDto product) throws ResourceNotFoundException;
 
 	String deleteProductById(String prodId) throws ResourceNotFoundException;
 
-	ResponseEntity<List<Product>> getAllProductsByCategoryId(String catid);
+	ResponseEntity<List<ProductResponseDto>> getAllProductsByCategoryId(String catid);
 
-	ResponseEntity<Product> createProduct(String catid, Product newProduct);
+	ResponseEntity<ProductResponseDto> createProduct(String catid, ProductDto productDto);
 
-	Product getCategory_CatIdByProdName(String catid, String productname) throws ResourceNotFoundException;
+	ProductResponseDto getCategory_CatIdByProdName(String catid, String productname) throws ResourceNotFoundException;
 
 }

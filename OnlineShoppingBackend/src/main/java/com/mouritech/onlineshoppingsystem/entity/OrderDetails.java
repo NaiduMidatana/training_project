@@ -32,6 +32,8 @@ import lombok.Setter;
 @Table(name = "order_details")
 public class OrderDetails {
 
+	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "orderDetails_id")
@@ -66,6 +68,8 @@ public class OrderDetails {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "orderId")
 	private Order order;
+
+	
 
 
 

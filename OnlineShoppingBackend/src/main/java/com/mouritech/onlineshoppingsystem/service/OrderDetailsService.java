@@ -5,24 +5,26 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+
+import com.mouritech.onlineshoppingsystem.dto.OrderDetailsDto;
 import com.mouritech.onlineshoppingsystem.entity.OrderDetails;
 import com.mouritech.onlineshoppingsystem.exception.ResourceNotFoundException;
 
 public interface OrderDetailsService {
 
-	OrderDetails insertOrderDetails(String orderId, @Valid OrderDetails newOrderDetails)
+	OrderDetailsDto insertOrderDetails(String orderId, @Valid OrderDetailsDto newOrderDetails)
 			throws ResourceNotFoundException;
 
-	List<OrderDetails> findByOrder_OrderId(String orderId);
+	List<OrderDetailsDto> findByOrder_OrderId(String orderId);
 
 	ResponseEntity<?> deleteOrderDetails(Long orderDetailsId) throws ResourceNotFoundException;
 
-	ResponseEntity<OrderDetails> updateOrderDetails(Long orderDetailsId, @Valid OrderDetails orderDetails)
+	ResponseEntity<OrderDetailsDto> updateOrderDetails(Long orderDetailsId, @Valid OrderDetailsDto orderDetails)
 			throws ResourceNotFoundException;
 
-	List<OrderDetails> getAllOrderDetails();
+	List<OrderDetailsDto> getAllOrderDetails();
 
-	OrderDetails saveOrderDetails(OrderDetails OrderDetails);
+	OrderDetailsDto saveOrderDetails(@Valid OrderDetailsDto orderdetails);
 
 
 }
