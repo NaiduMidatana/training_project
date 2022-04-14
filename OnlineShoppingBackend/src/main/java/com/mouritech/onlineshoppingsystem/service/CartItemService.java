@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
+import com.mouritech.onlineshoppingsystem.dto.CartItemDto;
 import com.mouritech.onlineshoppingsystem.entity.CartItem;
 
 import com.mouritech.onlineshoppingsystem.exception.ResourceNotFoundException;
@@ -12,13 +13,13 @@ public interface CartItemService {
 
 	CartItem showCartItemById(Long itemId) throws ResourceNotFoundException;
 
-	CartItem insertCartItem(CartItem newCartItem);
+	CartItemDto insertCartItem(CartItemDto newCartItem);
 
-	List<CartItem> showAllCartItems();
+	List<CartItemDto> showAllCartItems();
 
-	ResponseEntity<CartItem> insertCartItembyCartId(Long cartId, CartItem newCartItem) throws ResourceNotFoundException;
+	ResponseEntity<CartItemDto> insertCartItembyCartId(Long cartId, CartItemDto newCartItem) throws ResourceNotFoundException;
 
-	List<CartItem> findByCart_cartId(Long cartId);
+	List<CartItemDto> findByCart_cartId(Long cartId);
 
 	void removeFromCart(Long id) throws ResourceNotFoundException;
 }

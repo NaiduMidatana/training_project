@@ -13,8 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mouritech.onlineshoppingsystem.entity.Product;
 import com.mouritech.onlineshoppingsystem.entity.ProductImage;
 import com.mouritech.onlineshoppingsystem.exception.ResourceNotFoundException;
+import com.mouritech.onlineshoppingsystem.mapper.ProductMapper;
 import com.mouritech.onlineshoppingsystem.repository.ProductImageRepository;
 import com.mouritech.onlineshoppingsystem.repository.ProductRepository;
 import com.mouritech.onlineshoppingsystem.util.Constants;
@@ -29,10 +31,13 @@ public class ProductImageServiceImpl implements ProductImageService {
 	private ProductRepository productRepository;
 
 	@Autowired
+	ProductMapper productMapper;
+	@Autowired
 	private Constants constants;
 	
 	@Override
 	public Optional<ProductImage> addImage(String prodId, MultipartFile file) throws IOException {
+		
 		ProductImage pimg = new ProductImage();
 
 		return productRepository.findByProdId(prodId).map(item -> {
