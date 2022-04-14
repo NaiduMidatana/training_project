@@ -7,7 +7,7 @@ import java.util.Random;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResponseEntity<?> insertUser(User user) {
 		if (checkUserExistance(user.getUserName()))
-			return ResponseEntity.ok().body("user already exists");
+			return new ResponseEntity<>("user already exists",HttpStatus.BAD_REQUEST);
 		user.setUserId(generateuserId());
 		Role role = roleRepository.findById(2).get();
 		Set<Role> userRoles = new HashSet<>();
@@ -154,14 +154,15 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public ResponseEntity<?> login(UserDto userDto) {
-		Optional<User> user = userRepository.findByUserName(userDto.getUsername());
-		if (!user.isPresent())
-			return ResponseEntity.ok().body("username is invalid");
-		String encryptPwd = user.get().getPassword();
+		User user = userRepository.findByUserName(userDto.getUsername())
+				.orElseThrow(()->new ResourceNotFoundException("invalid username"));
+//		if (!user.isPresent())
+//			return new ResponseEntity<>("invalid username",HttpStatus.BAD_REQUEST);
+		String encryptPwd = user.getPassword();
 		if (passwordEncoder.matches(userDto.getPassword(), encryptPwd)) {
 			return ResponseEntity.ok().body(user);
 		} else {
-			return ResponseEntity.ok().body(constants.INVALID_CRED);
+			return new ResponseEntity<>(constants.INVALID_CRED, HttpStatus.UNAUTHORIZED);
 		}
 	}
 

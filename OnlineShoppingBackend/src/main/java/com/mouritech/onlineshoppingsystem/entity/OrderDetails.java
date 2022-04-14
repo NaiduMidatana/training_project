@@ -7,6 +7,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -31,7 +33,8 @@ import lombok.Setter;
 public class OrderDetails {
 
 	@Id
-	@Column(name = "order_id", length = 64)
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "orderDetails_id")
 	private Long orderDetailsId;
 
 	@Column(name = "unit_price", nullable = false)

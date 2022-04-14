@@ -24,7 +24,7 @@ public class Category {
 	@Column(name = "category_id", length = 64)
 	private String catId;
 
-	@Column(name = "category_name")
+	@Column(name = "category_name", unique=true)
 	@NotBlank(message = "Category Name is required")
 	private String catName;
 
